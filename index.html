@@ -3,70 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendario | Mantención 2026</title>
+    <title>Calendario Turnos 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Exo:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-body: #000000;
-            --glass-core: rgba(10, 10, 10, 0.88);
+            --glass-core: rgba(15, 15, 15, 0.9);
             --glass-border: rgba(255, 255, 255, 0.1);
             --accent-red: #ff3131;
+            --accent-cyan: #f4fcfd;
             --text-high: #ffffff;
-            --text-mid: #e0e0e0;
+            --text-mid: #b0b0b0;
         }
 
         * { box-sizing: border-box; font-family: 'Exo', sans-serif; }
-        body { background: var(--bg-body); min-height: 100vh; margin: 0; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+        body { background: var(--bg-body); min-height: 100vh; margin: 0; overflow: hidden; display: flex; justify-content: center; align-items: center; color: var(--text-high); }
 
-        /* --- CANVAS DE LÍNEAS BOREALES --- */
-        #auroraCanvas {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            background: #000;
-        }
+        /* --- FONDO CANVA BOREAL --- */
+        #auroraCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: #000; }
 
         .app-container { 
             width: 92%; max-width: 400px; 
             background: var(--glass-core);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            padding: 35px 25px; 
-            border-radius: 40px; 
+            backdrop-filter: blur(40px);
+            padding: 35px 20px; 
+            border-radius: 45px; 
             border: 1px solid var(--glass-border);
             text-align: center;
-            box-shadow: 0 0 50px rgba(0,0,0,1);
-            position: relative;
         }
 
-        .sub-titulo { font-size: 0.7rem; letter-spacing: 5px; color: var(--accent-red); font-weight: 800; margin-bottom: 2px; }
-        .main-title { font-size: 1.1rem; margin-bottom: 25px; font-weight: 300; color: #fff; }
-
+        .main-title { font-size: 1.1rem; margin-bottom: 25px; font-weight: 300; letter-spacing: 1px; }
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        #monthDisplay { font-weight: 600; text-transform: capitalize; color: #fff; }
-        .btn-nav { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; }
+        #monthDisplay { font-weight: 600; text-transform: capitalize; font-size: 0.95rem; }
+        .btn-nav { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: white; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; }
 
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
-        .day-name { font-size: 0.6rem; font-weight: 800; color: var(--accent-red); padding-bottom: 5px; }
-        
-        .day { 
-            aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; 
-            font-size: 0.9rem; border-radius: 50%; border: 1px solid var(--glass-border); 
-            color: var(--text-mid); background: rgba(255,255,255,0.02);
-        }
-
+        .day-name { font-size: 0.6rem; font-weight: 800; color: var(--accent-red); opacity: 0.8; }
+        .day { aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; border-radius: 50%; border: 1px solid var(--glass-border); color: var(--text-mid); transition: 0.2s; }
         .clickable:hover { border-color: var(--accent-red); background: rgba(255, 49, 49, 0.1); cursor: pointer; }
-        .sunday { color: var(--accent-red); opacity: 0.3; border-style: dashed; }
+        .sunday { color: var(--accent-red); opacity: 0.3; border-style: dashed; pointer-events: none; }
         .today { background: var(--accent-red) !important; color: #fff !important; font-weight: 800; border: none; box-shadow: 0 0 20px var(--accent-red); }
         .vaca-day { border-color: #fff; box-shadow: inset 0 0 8px rgba(255,255,255,0.2); }
 
-        /* Modal */
-        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: #0a0a0a; border: 1px solid var(--accent-red); width: 85%; max-width: 320px; padding: 30px; border-radius: 35px; text-align: center; }
-        .detail-row { display: flex; align-items: center; gap: 15px; margin: 20px 0; text-align: left; }
-        .badge { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--accent-red); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; }
-        .btn-close { width: 100%; padding: 15px; border-radius: 20px; border: none; background: var(--accent-red); color: #fff; font-weight: 800; cursor: pointer; }
-        .vaca-tag { background: #fff; color: #000; font-size: 0.6rem; padding: 4px 10px; border-radius: 10px; font-weight: 800; display: inline-block; margin-bottom: 10px; }
+        /* --- MODAL AJUSTADO --- */
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(15px); align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: #0a0a0a; border: 1px solid var(--accent-red); width: 90%; max-width: 340px; padding: 30px; border-radius: 40px; text-align: center; }
+        
+        .detail-row { display: flex; align-items: flex-start; gap: 15px; margin: 20px 0; text-align: left; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .detail-row:last-of-type { border-bottom: none; }
+        
+        .badge { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #fff; border: 1px solid var(--accent-red); flex-shrink: 0; margin-top: 5px; }
+        
+        .info-group { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+        .label-turno { color: var(--accent-red); font-size: 0.65rem; letter-spacing: 2px; font-weight: 800; margin-bottom: 5px; }
+        
+        .staff-item { display: flex; flex-direction: column; }
+        .staff-label { font-size: 0.55rem; color: #666; font-weight: 800; text-transform: uppercase; }
+        .staff-name { font-size: 1rem; color: #fff; font-weight: 600; }
+        .staff-name.cyan { color: var(--accent-cyan); }
+
+        .btn-close { width: 100%; padding: 16px; border-radius: 20px; border: none; background: var(--accent-red); font-weight: 800; color: #fff; cursor: pointer; margin-top: 10px; }
+        .vaca-tag { background: #fff; color: #000; font-size: 0.65rem; padding: 4px 12px; border-radius: 12px; font-weight: 800; margin-bottom: 15px; display: inline-block; }
     </style>
 </head>
 <body>
@@ -74,8 +71,8 @@
     <canvas id="auroraCanvas"></canvas>
 
     <div class="app-container">
-        <div class="sub-titulo">MANTENCIÓN 2026</div>
-        <h2 class="main-title">Turnos de Trabajo</h2>
+        <div style="font-size: 0.6rem; color: var(--accent-red); letter-spacing: 4px; font-weight: 800; margin-bottom: 5px;">CONTROL DE EQUIPOS</div>
+        <h2 class="main-title">Turnos 2026</h2>
         <header>
             <button class="btn-nav" id="prevMonth">❮</button>
             <div id="monthDisplay">-</div>
@@ -86,83 +83,86 @@
 
     <div id="modal" class="modal">
         <div class="modal-content">
-            <h3 id="modalDate" style="color: #fff;"></h3>
             <div id="vacaLabel"></div>
+            <h3 id="modalDate" style="color: #fff; margin-bottom: 5px; font-weight: 400; font-size: 1.1rem;"></h3>
+
             <div class="detail-row">
                 <div class="badge">M</div>
-                <div><small style="color:var(--accent-red);">MAÑANA</small><br><strong id="staffM" style="color:#fff;"></strong></div>
+                <div class="info-group">
+                    <span class="label-turno">TURNO MAÑANA</span>
+                    <div class="staff-item">
+                        <span class="staff-label">Mantención</span>
+                        <span class="staff-name" id="m_mant"></span>
+                    </div>
+                    <div class="staff-item">
+                        <span class="staff-label">Estacionamiento</span>
+                        <span class="staff-name cyan" id="m_esta"></span>
+                    </div>
+                </div>
             </div>
+
             <div class="detail-row">
-                <div class="badge" style="opacity: 0.5;">T</div>
-                <div><small style="color:#888;">TARDE</small><br><strong id="staffE" style="color:#fff;"></strong></div>
+                <div class="badge" style="opacity: 0.5; border-color: hsl(209, 100%, 50%);">T</div>
+                <div class="info-group">
+                    <span class="label-turno" style="color: #02b7ff;">TURNO TARDE</span>
+                    <div class="staff-item">
+                        <span class="staff-label">Mantención</span>
+                        <span class="staff-name" id="t_mant"></span>
+                    </div>
+                    <div class="staff-item">
+                        <span class="staff-label">Estacionamiento</span>
+                        <span class="staff-name cyan" id="t_esta"></span>
+                    </div>
+                </div>
             </div>
+
             <button class="btn-close" onclick="closeModal()">CERRAR</button>
         </div>
     </div>
 
 <script>
-    /* --- LÓGICA DEL FONDO (CANVAS) --- */
+    /* FONDO BOREAL */
     const canvas = document.getElementById('auroraCanvas');
     const ctx = canvas.getContext('2d');
     let lines = [];
-
     function initCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
         lines = [];
-        for(let i = 0; i < 25; i++) {
-            lines.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                speed: 0.5 + Math.random() * 1.5,
-                width: 1 + Math.random() * 3,
-                opacity: 0.1 + Math.random() * 0.4
-            });
-        }
+        for(let i=0; i<18; i++) lines.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, speed: 0.4+Math.random()*0.8, w: 1.5, o: 0.1+Math.random()*0.3 });
     }
-
     function animate() {
-        ctx.fillStyle = 'black';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
+        ctx.fillStyle = 'black'; ctx.fillRect(0,0,canvas.width,canvas.height);
         lines.forEach(l => {
-            l.y -= l.speed;
-            if (l.y < -200) l.y = canvas.height + 200;
-
-            // Dibujar línea con resplandor
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = '#ff3131';
-            ctx.strokeStyle = `rgba(255, 49, 49, ${l.opacity})`;
-            ctx.lineWidth = l.width;
-            ctx.beginPath();
-            ctx.moveTo(l.x, l.y);
-            ctx.lineTo(l.x, l.y + 150);
-            ctx.stroke();
+            l.y -= l.speed; if(l.y < -150) l.y = canvas.height + 150;
+            ctx.shadowBlur = 10; ctx.shadowColor = '#ff3131';
+            ctx.strokeStyle = `rgba(255, 49, 49, ${l.o})`; ctx.lineWidth = l.w;
+            ctx.beginPath(); ctx.moveTo(l.x, l.y); ctx.lineTo(l.x, l.y+150); ctx.stroke();
         });
         requestAnimationFrame(animate);
     }
+    initCanvas(); animate(); window.addEventListener('resize', initCanvas);
 
-    window.addEventListener('resize', initCanvas);
-    initCanvas();
-    animate();
+    /* LÓGICA DE TURNOS */
+    const hoy = new Date(); let viewDate = new Date(2026, 0, 1);
 
-    /* --- LÓGICA CALENDARIO --- */
-    const hoy = new Date(); 
-    let viewDate = new Date(2026, 0, 1);
-
-    function getTurno(fecha) {
+    function getTurnosCompletos(fecha) {
         if (fecha.getDay() === 0) return null;
-        const mes = fecha.getMonth();
-        const dia = fecha.getDate();
-        // Vacaciones Gerardo (Feb 2-7)
-        if (mes === 1 && dia >= 2 && dia <= 7) return { mañana: "Agustín", tarde: "Agustín", nota: "VACACIONES GERARDO" };
-        // Vacaciones Agustín (Feb 9-14)
-        if (mes === 1 && dia >= 9 && dia <= 14) return { mañana: "Gerardo", tarde: "Gerardo", nota: "VACACIONES AGUSTÍN" };
-
         const startOfYear = new Date(2026, 0, 1);
-        const diff = fecha - startOfYear;
-        const weekNum = Math.ceil((Math.floor(diff/(86400000)) + startOfYear.getDay() + 1) / 7);
-        return (weekNum % 2 === 0) ? { mañana: "Gerardo", tarde: "Agustín" } : { mañana: "Agustín", tarde: "Gerardo" };
+        const weekNum = Math.ceil((Math.floor((fecha - startOfYear)/(86400000)) + startOfYear.getDay() + 1) / 7);
+        
+        // Rotación Normal
+        let m_mant = (weekNum % 2 === 0) ? "Gerardo" : "Agustín";
+        let t_mant = (weekNum % 2 === 0) ? "Agustín" : "Gerardo";
+        let m_esta = (weekNum % 2 === 0) ? "Karina" : "Camila";
+        let t_esta = (weekNum % 2 === 0) ? "Camila" : "Karina";
+        let nota = "";
+
+        // Vacaciones Feb
+        const mes = fecha.getMonth(); const dia = fecha.getDate();
+        if (mes === 1 && dia >= 2 && dia <= 7) { m_mant = "Agustín"; t_mant = "Agustín"; nota = "VACACIONES GERARDO"; }
+        if (mes === 1 && dia >= 9 && dia <= 14) { m_mant = "Gerardo"; t_mant = "Gerardo"; nota = "VACACIONES AGUSTÍN"; }
+
+        return { mant: {m: m_mant, t: t_mant, nota}, esta: {m: m_esta, t: t_esta} };
     }
 
     function renderCalendar() {
@@ -170,46 +170,38 @@
         const monthEl = document.getElementById('monthDisplay');
         calendarEl.innerHTML = "";
         monthEl.innerText = new Intl.DateTimeFormat('es-ES', { month: 'long', year: 'numeric' }).format(viewDate);
-
-        ['DOM', 'LUN', 'MAR', 'MIE', 'JUE', 'VIE', 'SAB'].forEach(d => {
-            const h = document.createElement('div'); h.className = 'day-name'; h.innerText = d;
-            calendarEl.appendChild(h);
+        ['D','L','M','M','J','V','S'].forEach(d => {
+            const h = document.createElement('div'); h.className = 'day-name'; h.innerText = d; calendarEl.appendChild(h);
         });
-
-        const firstDayOfMonth = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1).getDay();
+        const firstDay = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1).getDay();
         const daysInMonth = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 0).getDate();
-        for (let i = 0; i < firstDayOfMonth; i++) calendarEl.appendChild(document.createElement('div'));
-
+        for (let i = 0; i < firstDay; i++) calendarEl.appendChild(document.createElement('div'));
         for (let d = 1; d <= daysInMonth; d++) {
             const date = new Date(viewDate.getFullYear(), viewDate.getMonth(), d);
-            const isSunday = date.getDay() === 0;
-            const turno = getTurno(date);
-            const dayDiv = document.createElement('div');
-            dayDiv.innerText = d;
+            const turnos = getTurnosCompletos(date);
+            const dayDiv = document.createElement('div'); dayDiv.innerText = d;
             let classes = 'day';
-            if (isSunday) classes += ' sunday';
+            if (date.getDay() === 0) classes += ' sunday';
             else {
                 classes += ' clickable';
                 if (date.toDateString() === hoy.toDateString()) classes += ' today';
-                if (turno && turno.nota) classes += ' vaca-day';
-                dayDiv.onclick = () => openModal(d, monthEl.innerText, turno);
+                if (turnos && turnos.mant.nota) classes += ' vaca-day';
+                dayDiv.onclick = () => openModal(d, monthEl.innerText, turnos);
             }
-            dayDiv.className = classes;
-            calendarEl.appendChild(dayDiv);
+            dayDiv.className = classes; calendarEl.appendChild(dayDiv);
         }
     }
 
-    function openModal(dia, mes, turno) {
+    function openModal(dia, mes, turnos) {
         document.getElementById('modalDate').innerText = `${dia} de ${mes}`;
-        const label = document.getElementById('vacaLabel');
-        label.innerHTML = turno.nota ? `<span class="vaca-tag">${turno.nota}</span>` : "";
-        document.getElementById('staffM').innerText = turno.mañana;
-        document.getElementById('staffE').innerText = turno.tarde;
+        document.getElementById('vacaLabel').innerHTML = turnos.mant.nota ? `<span class="vaca-tag">${turnos.mant.nota}</span>` : "";
+        document.getElementById('m_mant').innerText = turnos.mant.m;
+        document.getElementById('t_mant').innerText = turnos.mant.t;
+        document.getElementById('m_esta').innerText = turnos.esta.m;
+        document.getElementById('t_esta').innerText = turnos.esta.t;
         document.getElementById('modal').style.display = 'flex';
     }
-
     function closeModal() { document.getElementById('modal').style.display = 'none'; }
-
     document.getElementById('prevMonth').onclick = () => { viewDate.setMonth(viewDate.getMonth() - 1); renderCalendar(); };
     document.getElementById('nextMonth').onclick = () => { viewDate.setMonth(viewDate.getMonth() + 1); renderCalendar(); };
     window.onload = renderCalendar;
